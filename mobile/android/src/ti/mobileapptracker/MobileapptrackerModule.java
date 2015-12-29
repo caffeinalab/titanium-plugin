@@ -33,6 +33,10 @@ import com.mobileapptracker.MobileAppTracker;
 public class MobileapptrackerModule extends KrollModule {    
     private static MobileAppTracker mat = null;
     
+    /////////////////////////////////
+    // Initialization methods
+    /////////////////////////////////
+    
     public MobileapptrackerModule() {
         super();
     }
@@ -48,8 +52,13 @@ public class MobileapptrackerModule extends KrollModule {
         mat.setPluginName("titanium");
     }
     
+    /////////////////////////////////
+    // Measurement methods
+    /////////////////////////////////
+    
     @Kroll.method
     public void measureSession() {
+        mat.setReferralSources(getActivity());
         mat.measureSession();
     }
     
@@ -63,6 +72,10 @@ public class MobileapptrackerModule extends KrollModule {
         // Convert KrollDict to MATEvent
         mat.measureEvent(convertToMATEvent(event));
     }
+    
+    /////////////////////////////////
+    // TUNE deferred deep link method
+    /////////////////////////////////
     
     @Kroll.method
     public void checkForDeferredDeeplink(final KrollFunction callback) {
@@ -82,6 +95,10 @@ public class MobileapptrackerModule extends KrollModule {
             }
         });
     }
+    
+    /////////////////////////////////
+    // Setter methods
+    /////////////////////////////////
     
     @Kroll.method
     public void setAge(int age) {
@@ -111,6 +128,11 @@ public class MobileapptrackerModule extends KrollModule {
     @Kroll.method
     public void setDebugMode(boolean debugMode) {
         mat.setDebugMode(debugMode);
+    }
+    
+    @Kroll.method
+    public void setDeepLink(String deepLinkUrl) {
+        mat.setReferralUrl(deepLinkUrl);
     }
     
     @Kroll.method
@@ -263,6 +285,10 @@ public class MobileapptrackerModule extends KrollModule {
     public void setShouldAutoGenerateAppleVendorIdentifier(boolean shouldAutoGenerate) {
         // no-op
     }
+    
+    /////////////////////////////////
+    // Helper methods
+    /////////////////////////////////
     
     private MATEvent convertToMATEvent(KrollDict krollEvent) {
         if (krollEvent == null || krollEvent.isEmpty() || !krollEvent.containsKeyAndNotNull("eventName")) {

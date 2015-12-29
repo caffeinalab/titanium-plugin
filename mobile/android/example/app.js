@@ -1,5 +1,7 @@
 // Test harness for MAT Titanium Android module
 
+"use strict";
+
 // open a single window
 var win = Ti.UI.createWindow({
     backgroundColor:'white'
@@ -50,8 +52,8 @@ button.addEventListener('click',function(e) {
     mat.setDelegate(true);
     
     mat.checkForDeferredDeeplink(function(result) {
-        var deeplink = result['deeplink'];
-        var error = result['error'];
+        var deeplink = result.deeplink;
+        var error = result.error;
         console.log('deeplink is ' + deeplink);
         console.log('deeplink error is ' + error);
     });
@@ -87,7 +89,7 @@ scrollView.add(button);
 var button = Titanium.UI.createButton({ title: 'Measure Event With Event Items', top: 1070, width: Ti.UI.FILL, height: 200, borderWidth:1, borderRadius:8 });
 button.addEventListener('click',function(e) {
 
-    var eventItems = new Array();
+    var eventItems = [];
 
     var eventItem1 = {"item":"item1",
                       "quantity":1,
@@ -140,6 +142,7 @@ button.addEventListener('click',function(e) {
     mat.setAppleAdvertisingIdentifier("12345678-1234-1234-1234-123456789012", false);
     mat.setAppleVendorIdentifier("12345678-1234-1234-1234-123456789012");
     mat.setCurrencyCode("tempCurrencyCode");
+    mat.setDeepLink("myapp://mylink1/mylink2");
     mat.setExistingUser(false);
     mat.setFacebookEventLogging(true, false);
     mat.setFacebookUserId("tempFacebook_user_id");

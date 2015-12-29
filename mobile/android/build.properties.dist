@@ -1,4 +1,4 @@
-titanium.platform=<replace_with_titanium_home_path>/mobilesdk/osx/3.2.0.GA/android
-android.platform=<replace_with_android_sdk_path>/platforms/android-10
-google.apis=<replace_with_android_sdk_path>/add-ons/addon-google_apis-google-10
+titanium.platform=<replace_with_titanium_home_path>/mobilesdk/osx/<replace_with_titanium_version>/android
+android.platform=<replace_with_android_sdk_path>/platforms/android-<replace_with_android_sdk_version>
+google.apis=<replace_with_android_sdk_path>/add-ons/addon-google_apis-google-<replace_with_android_sdk_version>
 android.ndk=<replace_with_android_ndk_path>

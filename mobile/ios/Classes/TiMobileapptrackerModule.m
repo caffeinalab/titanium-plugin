@@ -169,7 +169,7 @@
     // Check if optional fields exist
     NSNumber* revenue = (NSNumber*)[eventDict objectForKey:@"revenue"];
     if (revenue) {
-        event.revenue = [revenue floatValue];
+        event.revenue = revenue.floatValue;
     }
     NSString* currencyCode = (NSString*)[eventDict objectForKey:@"currencyCode"];
     if (currencyCode) {
@@ -187,21 +187,25 @@
     if (contentType) {
         event.contentType = contentType;
     }
-    if ([eventDict objectForKey:@"date1"]) {
-        event.date1 = [NSDate dateWithTimeIntervalSince1970:[((NSNumber*)[eventDict objectForKey:@"date1"]) doubleValue]/1000];
+    NSNumber *numDate1 = (NSNumber *)[eventDict objectForKey:@"date1"];
+    if (numDate1) {
+        event.date1 = [NSDate dateWithTimeIntervalSince1970:numDate1.doubleValue/1000];
     }
-    if ([eventDict objectForKey:@"date2"]) {
-        event.date2 = [NSDate dateWithTimeIntervalSince1970:[((NSNumber*)[eventDict objectForKey:@"date2"]) doubleValue]/1000];
+    NSNumber *numDate2 = (NSNumber *)[eventDict objectForKey:@"date2"];
+    if (numDate2) {
+        event.date2 = [NSDate dateWithTimeIntervalSince1970:numDate2.doubleValue/1000];
     }
-    if ([eventDict objectForKey:@"level"]) {
-        event.level = [(NSNumber*)[eventDict objectForKey:@"level"] intValue];
+    NSNumber *numLevel = (NSNumber *)[eventDict objectForKey:@"level"];
+    if (numLevel) {
+        event.level = numLevel.intValue;
     }
-    if ([eventDict objectForKey:@"quantity"]) {
-        event.quantity = [(NSNumber*)[eventDict objectForKey:@"quantity"] intValue];
+    NSNumber *numQuantity = (NSNumber *)[eventDict objectForKey:@"quantity"];
+    if (numQuantity) {
+        event.quantity = numQuantity.intValue;
     }
     NSNumber* rating = (NSNumber*)[eventDict objectForKey:@"rating"];
     if (rating) {
-        event.rating = [rating floatValue];
+        event.rating = rating.floatValue;
     }
     NSString* searchString = (NSString*)[eventDict objectForKey:@"searchString"];
     if (searchString) {
@@ -244,8 +248,11 @@
 
 - (void)setSiteId:(id)siteId
 {
-    NSLog(@"[INFO] TIMATModule: setSiteId");
+    NSLog(@"[INFO] TIMATModule: setSiteId: is deprecated. Instead use setPackageName: to provide the TUNE package that corresponds to this siteId/appId.");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [Tune setSiteId:siteId];
+#pragma clang diagnostic pop
 }
 
 - (void)setCurrencyCode:(id)currencyCode
@@ -260,7 +267,7 @@
     NSString *strAppleAdvId = [args objectAtIndex:0];
     
     NSNumber* strEnabled = [args objectAtIndex:1];
-    BOOL enabled = [strEnabled boolValue];
+    BOOL enabled = strEnabled.boolValue;
     
     id classNSUUID = NSClassFromString(@"NSUUID");
     
@@ -342,8 +349,8 @@
         NSNumber* numEnable = [arguments objectAtIndex:0];
         NSNumber* numLimit = [arguments objectAtIndex:1];
         
-        BOOL enable = [numEnable boolValue];
-        BOOL limit = [numLimit boolValue];
+        BOOL enable = numEnable.boolValue;
+        BOOL limit = numLimit.boolValue;
         
         [Tune setFacebookEventLogging:enable limitEventAndDataUsage:limit];
     }
@@ -432,16 +439,30 @@
     // Android only method, no-op on iOS
 }
 
+- (void)setDeepLink:(id)deepLinkUrl
+{
+    NSLog(@"[INFO] TIMATModule: setDeepLink");
+    
+    [self applicationDidOpenURL:@[deepLinkUrl]];
+}
+
 - (void)applicationDidOpenURL:(id)args
 {
     NSLog(@"[INFO] TIMATModule: applicationDidOpenURL");
     NSArray* arguments = args;
-    if ([arguments count] == 2)
+    NSString* strUrl = nil;
+    NSString* strSource = nil;
+    
+    if ([arguments count] > 0)
     {
-        NSString* strURL = [arguments objectAtIndex:0];
-        NSString* strSource = [arguments objectAtIndex:1];
+        strUrl = [arguments objectAtIndex:0];
         
-        [Tune applicationDidOpenURL:strURL sourceApplication:strSource];
+        if ([arguments count] == 2)
+        {
+            strSource = [arguments objectAtIndex:1];
+        }
+        
+        [Tune applicationDidOpenURL:strUrl sourceApplication:strSource];
     }
 }
 
@@ -455,8 +476,14 @@
 
 - (id)getMatId:(id)dummy
 {
-    NSLog(@"[INFO] TIMATModule: getMatId");
-    return [Tune matId];
+    NSLog(@"[INFO] TIMATModule: getMatId is deprecated. Please use getTuneId: instead to get the value of \"mat_id\" param.");
+    return [Tune tuneId];
+}
+
+- (id)getTuneId:(id)dummy
+{
+    NSLog(@"[INFO] TIMATModule: getTuneId");
+    return [Tune tuneId];
 }
 
 - (id)getOpenLogId:(id)dummy
@@ -481,13 +508,13 @@
         
         NSString *name = (NSString *)[dict objectForKey:@"item"];
         NSString *strUnitPrice = (NSString *)[dict objectForKey:@"unit_price"];
-        float unitPrice = [NSNull null] == (id)strUnitPrice ? 0 : [strUnitPrice floatValue];
+        float unitPrice = [NSNull null] == (id)strUnitPrice ? 0 : strUnitPrice.floatValue;
         
         NSString *strQuantity = (NSString *)[dict objectForKey:@"quantity"];
-        int quantity = [NSNull null] == (id)strQuantity ? 0 : [strQuantity intValue];
+        int quantity = [NSNull null] == (id)strQuantity ? 0 : strQuantity.intValue;
         
         NSString *strRevenue = (NSString *)[dict objectForKey:@"revenue"];
-        float revenue = [NSNull null] == (id)strRevenue ? 0 : [strRevenue floatValue];
+        float revenue = [NSNull null] == (id)strRevenue ? 0 : strRevenue.floatValue;
         
         NSString *attribute1 = (NSString *)[dict objectForKey:@"attribute1"];
         NSString *attribute2 = (NSString *)[dict objectForKey:@"attribute2"];
@@ -537,7 +564,7 @@ NSDateFormatter* dateFormatter()
     NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"[INFO] TIMATModule tuneDidSucceedWithData: %@", str);
     
-    NSDictionary *dict = @{@"data":str ? str : @""};
+    NSDictionary *dict = @{@"data":str ?: @""};
     
     [self fireEvent:@"tuneDidSucceedWithData" withObject:dict];
 }
@@ -546,14 +573,29 @@ NSDateFormatter* dateFormatter()
 {
     NSLog(@"[INFO] TIMATModule tuneDidFailWithError: %@", error);
     
-    [self fireEvent:@"tuneDidFailWithError" withObject:error.userInfo errorCode:error.code message:error.description];
+    NSInteger errorCode = error.code;
+    NSString *errorDescr = error.localizedDescription;
+    
+    NSString *errorURLString = nil;
+    NSDictionary *dictError = error.userInfo;
+    
+    if(dictError)
+    {
+        errorURLString = [dictError objectForKey:NSURLErrorFailingURLStringErrorKey];
+    }
+    
+    errorURLString = nil == error ? @"" : errorURLString;
+    
+    NSString *strError = [NSString stringWithFormat:@"{\"code\":\"%zd\",\"localizedDescription\":\"%@\",\"failedURL\":\"%@\"}", errorCode, errorDescr, errorURLString];
+    
+    [self fireEvent:@"tuneDidFailWithError" withObject:strError];
 }
 
 - (void)tuneEnqueuedActionWithReferenceId:(NSString *)referenceId
 {
     NSLog(@"[INFO] TIMATModule tuneEnqueuedActionWithReferenceId: %@", referenceId);
     
-    NSDictionary *dict = @{@"refId":referenceId ? referenceId : @""};
+    NSDictionary *dict = @{@"refId":referenceId ?: @""};
     
     [self fireEvent:@"tuneEnqueuedActionWithReferenceId" withObject:dict];
 }
@@ -561,14 +603,14 @@ NSDateFormatter* dateFormatter()
 - (void)tuneDidReceiveDeeplink:(NSString *)deeplink
 {
     NSLog(@"[INFO] TIMATModule tuneDidReceiveDeeplink: %@", deeplink);
-    NSDictionary *dict = @{@"deeplink":deeplink ? deeplink : @""};
+    NSDictionary *dict = @{@"deeplink":deeplink ?: @""};
     [self fireEvent:@"tuneDidReceiveDeeplink" withObject:dict];
 }
 
 - (void)tuneDidFailDeeplinkWithError:(NSError *)error
 {
     NSLog(@"[INFO] TIMATModule tuneDidFailDeeplinkWithError: %@", error);
-    NSDictionary *dict = @{@"error":error ? error : @""};
+    NSDictionary *dict = @{@"error":error ?: @""};
     [self fireEvent:@"tuneDidFailDeeplinkWithError" withObject:dict];
 }
 
