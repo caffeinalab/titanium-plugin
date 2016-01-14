@@ -54,14 +54,12 @@
     </modules>
     <deployment-targets>
         <target device="android">true</target>
-        <target device="blackberry">false</target>
         <target device="ipad">true</target>
         <target device="iphone">true</target>
         <target device="mobileweb">false</target>
-        <target device="tizen">false</target>
     </deployment-targets>
-    <sdk-version>5.1.1.GA</sdk-version>
-    <property name="appc-app-id" type="string">5674a2c24daf52147a6a7784</property>
+    <sdk-version>3.5.1.GA</sdk-version>
+    <property name="appc-app-id" type="string">55f0701c67cb0e064d126dd5</property>
     <property name="acs-authbase-url-development" type="string">https://secure-identity.cloud.appcelerator.com</property>
     <property name="acs-base-url-development" type="string">https://api.cloud.appcelerator.com</property>
     <property name="acs-oauth-secret-development" type="string">DZm6PunqFhVYF3PcX9FIfCi28GHmrXqJ</property>

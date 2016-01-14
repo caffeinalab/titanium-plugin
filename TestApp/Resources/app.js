@@ -60,12 +60,12 @@ button.addEventListener('click',function(e) {
     mat.setPackageName(pkgName);
     mat.setDelegate(true);
     
-    /*mat.checkForDeferredDeeplink(function(result) {
+    mat.checkForDeferredDeeplink(function(result) {
         var deeplink = result['deeplink'];
         var error = result['error'];
         console.log('deeplink is ' + deeplink);
         console.log('deeplink error is ' + error);
-    });*/
+    });
 });
 scrollView.add(button);
 
